@@ -7,11 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    use HasFactory, notifiable;
-    protected $fillable = ['title', 'content', 'slug'];
+    use HasFactory;
+    protected $fillable = [
+        'title',
+        'slug',
+        'excerpt',
+        'body',
+        'thumbnail',
+        'status',
+        'published_at',
+    ];
 
-    public function project()
-    {
-        return $this->belongsTo(Project::class);
-    }
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
 }

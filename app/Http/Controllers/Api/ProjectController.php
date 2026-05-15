@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -37,7 +38,7 @@ class ProjectController extends Controller
         $validated["slug"] = Str::slug($validated["title"]);
 
         $project = Project::create($validated);
-        return new ProjectResource($project);
+        return response()->json(new ProjectResource($project), 201);
     }
 
     /**
@@ -75,7 +76,7 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Project $project)
     {
         $project->delete();
         return response()->json(["message" => "Project deleted successfully"], 200);

@@ -2,9 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Skill extends Model
 {
-    //
+    use HasFactory;
+    protected $fillable = [
+        'name',
+        'category',
+        'level',
+        'icon',
+        'order',
+        'is_visible',
+    ];
+
+    protected $casts = [
+        'is_visible' => 'boolean',
+        'level'      => 'integer',
+        'order'      => 'integer',
+    ];
 }
