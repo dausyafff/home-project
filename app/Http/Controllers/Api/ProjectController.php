@@ -30,7 +30,7 @@ class ProjectController extends Controller
             "tech_stack" => "nullable|array",
             "github_url" => "nullable|url",
             "live_url" => "nullable|url",
-            "thumbnail" => "nullable|image|max:2048",
+            "thumbnail" => "nullable|string|max:255",
             "status" => "required|in:active,archived",
             "is_featured" => "required|boolean",
         ]);
@@ -60,7 +60,7 @@ class ProjectController extends Controller
             "tech_stack" => "nullable|array",
             "github_url" => "nullable|url",
             "live_url" => "nullable|url",
-            "thumbnail" => "nullable|image|max:2048",
+            "thumbnail" => "nullable|string|max:255",
             "status" => "in:active,archived",
             "is_featured" => "boolean",
         ]);
