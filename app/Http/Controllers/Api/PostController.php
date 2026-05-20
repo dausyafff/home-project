@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PostResource;
+use App\Http\Traits\ApiResponse;
 use App\Models\Post;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $posts = Post::latest()->get();
-        return PostResource::collection($posts);
+        return $this->success(PostResource::collection($posts), 'Data post berhasil diambil');
     }
 
     /**
@@ -35,7 +38,7 @@ class PostController extends Controller
         $validated['slug'] = Str::slug($validated['title']);
 
         $post = Post::create($validated);
-        return new PostResource($post);
+        return $this->success(new PostResource($post), 'Post created successfully', 201);
     }
 
     /**
@@ -43,7 +46,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        return new PostResource($post);
+        return $this->success(new PostResource($post), 'Post data retrieved successfully');
     }
 
     /**
@@ -65,7 +68,7 @@ class PostController extends Controller
         }
 
         $post->update($validated);
-        return new PostResource($post);
+        return $this->success(new PostResource($post), 'Post updated successfully');
     }
 
     /**
@@ -74,6 +77,6 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
-        return response()->json(null, 204);
+        return $this->success(null, 'Post deleted successfully');
     }
 }

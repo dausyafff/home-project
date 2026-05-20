@@ -4,19 +4,24 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProjectResource;
+use App\Http\Traits\ApiResponse;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
+    use ApiResponse;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $projects = Project::latest()->get();
-        return ProjectResource::collection($projects);
+        return $this->success(
+            ProjectResource::collection($projects),
+            'Data project berhasil diambil'
+        );
     }
 
     /**
@@ -36,9 +41,9 @@ class ProjectController extends Controller
         ]);
 
         $validated["slug"] = Str::slug($validated["title"]);
-
         $project = Project::create($validated);
-        return response()->json(new ProjectResource($project), 201);
+
+        return $this->success(new ProjectResource($project), 'Project created successfully', 201);
     }
 
     /**
@@ -46,7 +51,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        return new ProjectResource($project);
+        return $this->success(new ProjectResource($project), 'Project data retrieved successfully');
     }
 
     /**
@@ -68,9 +73,9 @@ class ProjectController extends Controller
         if (isset($validated["title"])) {
             $validated["slug"] = Str::slug($validated["title"]);
         }
-
         $project->update($validated);
-        return new ProjectResource($project);
+
+        return $this->success(new ProjectResource($project), 'Project updated successfully');
     }
 
     /**
@@ -79,6 +84,6 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-        return response()->json(["message" => "Project deleted successfully"], 200);
+        return $this->success(null, 'Project deleted successfully');
     }
 }
