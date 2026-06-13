@@ -8,6 +8,7 @@ use App\Http\Traits\ApiResponse;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Services\ProjectService;
 
 class ProjectController extends Controller
 {
@@ -15,11 +16,14 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function __construct(private ProjectService $projectService) {}
+
+    public function index(Request $request)
     {
-        $projects = Project::latest()->get();
+        $projects = $this->projectService->getAll($request);
+
         return $this->success(
-            ProjectResource::collection($projects),
+            ProjectResource::collection($projects)->response()->getData(true),
             'Data project berhasil diambil'
         );
     }
@@ -41,7 +45,7 @@ class ProjectController extends Controller
         ]);
 
         $validated["slug"] = Str::slug($validated["title"]);
-        $project = Project::create($validated);
+        $project = $this->projectService->create($validated);
 
         return $this->success(new ProjectResource($project), 'Project created successfully', 201);
     }
@@ -73,7 +77,7 @@ class ProjectController extends Controller
         if (isset($validated["title"])) {
             $validated["slug"] = Str::slug($validated["title"]);
         }
-        $project->update($validated);
+        $this->projectService->update($project, $validated);
 
         return $this->success(new ProjectResource($project), 'Project updated successfully');
     }
@@ -83,7 +87,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        $project->delete();
+        $this->projectService->delete($project);
         return $this->success(null, 'Project deleted successfully');
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\SlkillResource;
 use App\Http\Traits\ApiResponse;
 use App\Models\Skill;
+use App\Services\SkillService;
 use Illuminate\Http\Request;
 
 class SkillController extends Controller
@@ -14,9 +15,10 @@ class SkillController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function __construct(private SkillService $skillService) {}
+    public function index(Request $request)
     {
-        $skills = Skill::orderBy("order")->get();
+        $skills = $this->skillService->getAll($request);
         return $this->success(SlkillResource::collection($skills), 'Data skill berhasil diambil');
     }
 
@@ -34,7 +36,7 @@ class SkillController extends Controller
             'is_visible' => 'boolean',
         ]);
 
-        $skill = Skill::create($validated);
+        $skill = $this->skillService->create($validated);
         return $this->success(new SlkillResource($skill), 'Skill created successfully', 201);
     }
 
@@ -60,7 +62,7 @@ class SkillController extends Controller
             'is_visible' => 'boolean',
         ]);
 
-        $skill->update($validated);
+        $this->skillService->update($skill, $validated);
         return $this->success(new SlkillResource($skill), 'Skill updated successfully');
     }
 
@@ -69,7 +71,7 @@ class SkillController extends Controller
      */
     public function destroy(Skill $skill)
     {
-        $skill->delete();
+        $this->skillService->delete($skill);
         return $this->success(null, 'Skill deleted successfully');
     }
 }
