@@ -9,6 +9,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Services\ProjectService;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -45,6 +46,12 @@ class ProjectController extends Controller
         ]);
 
         $validated["slug"] = Str::slug($validated["title"]);
+
+        if ($request->hasFile("thumbnail")) {
+            $path = $request->file("thumbnail")->store("projects", "public");
+            $validated["thumbnail"] = $path;
+        }
+
         $project = $this->projectService->create($validated);
 
         return $this->success(new ProjectResource($project), 'Project created successfully', 201);
@@ -77,6 +84,15 @@ class ProjectController extends Controller
         if (isset($validated["title"])) {
             $validated["slug"] = Str::slug($validated["title"]);
         }
+        if ($request->hasFile('thumbnail')) {
+            // Hapus thumbnail lama supaya tidak menumpuk file tak terpakai
+            if ($project->thumbnail) {
+                Storage::disk('public')->delete($project->thumbnail);
+            }
+            $path = $request->file('thumbnail')->store('projects', 'public');
+            $validated['thumbnail'] = $path;
+        }
+
         $this->projectService->update($project, $validated);
 
         return $this->success(new ProjectResource($project), 'Project updated successfully');
