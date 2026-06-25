@@ -40,7 +40,7 @@ class ProjectController extends Controller
             "tech_stack" => "nullable|array",
             "github_url" => "nullable|url",
             "live_url" => "nullable|url",
-            "thumbnail" => "nullable|string|max:255",
+            "thumbnail" => "nullable|image|mimes:jpg,jpeg,png,webp|max:2048",
             "status" => "required|in:active,archived",
             "is_featured" => "required|boolean",
         ]);
@@ -76,7 +76,7 @@ class ProjectController extends Controller
             "tech_stack" => "nullable|array",
             "github_url" => "nullable|url",
             "live_url" => "nullable|url",
-            "thumbnail" => "nullable|string|max:255",
+            "thumbnail" => "nullable|image|mimes:jpg,jpeg,png,webp|max:2048",
             "status" => "in:active,archived",
             "is_featured" => "boolean",
         ]);
@@ -103,6 +103,10 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        if ($project->thumbnail) {
+            Storage::disk('public')->delete($project->thumbnail);
+        }
+
         $this->projectService->delete($project);
         return $this->success(null, 'Project deleted successfully');
     }

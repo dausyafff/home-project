@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectResource extends JsonResource
 {
@@ -22,7 +23,8 @@ class ProjectResource extends JsonResource
             'tech_stack'  => $this->tech_stack,
             'github_url'  => $this->github_url,
             'live_url'    => $this->live_url,
-            'thumbnail'   => $this->thumbnail,
+            'thumbnail'   => $this->thumbnail
+                ? Storage::disk('public')->url($this->thumbnail) : null,
             'status'      => $this->status,
             'is_featured' => $this->is_featured,
             'created_at'  => $this->created_at->toDateString(),
