@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SkillController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,7 @@ Route::get('/skills',        [SkillController::class, 'index']);
 Route::get('/skills/{skill}',     [SkillController::class, 'show']);
 Route::get('/posts',         [PostController::class, 'index']);
 Route::get('/posts/{post}',       [PostController::class, 'show']);
+Route::get('/search', SearchController::class);
 
 // protected Routes (need token)
 Route::middleware('auth:sanctum')->group(function () {
