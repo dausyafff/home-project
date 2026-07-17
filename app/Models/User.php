@@ -30,4 +30,16 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Tambahkan method ini di dalam class User
+    public function sendPasswordResetNotification($token)
+    {
+        $frontendUrl = config('app.frontend_url', 'http://localhost:5173');
+
+        $url = "{$frontendUrl}/reset-password?token={$token}&email="
+            . urlencode($this->email);
+
+        // Kirim notifikasi dengan URL yang sudah kita kustomisasi
+        $this->notify(new \App\Notifications\ResetPasswordNotification($url));
+    }
 }

@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SkillController;
+use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\ResetPasswordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +26,10 @@ Route::get('/skills/{skill}',     [SkillController::class, 'show']);
 Route::get('/posts',         [PostController::class, 'index']);
 Route::get('/posts/{post}',       [PostController::class, 'show']);
 Route::get('/search', SearchController::class);
+
+// password handle
+Route::post('/forgot-password', ForgotPasswordController::class);
+Route::post('/reset-password',  ResetPasswordController::class);
 
 // protected Routes (need token)
 Route::middleware('auth:sanctum')->group(function () {
